@@ -50,6 +50,7 @@ type AdditionalAttributes struct {
 	IsHybridShare  bool   `json:"is_hybrid_share,omitempty"`
 	IsWormShare    bool   `json:"is_worm_share,omitempty"`
 	MountPointType string `json:"mount_point_type,omitempty"`
+	Size           int64  `json:"size,omitempty"`
 	Owner          struct {
 		Group   string `json:"group,omitempty"`
 		GroupID int    `json:"gid,omitempty"`
