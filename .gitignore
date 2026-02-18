@@ -2,3 +2,5 @@
 .env
 js
 generate
+.idea
+examples

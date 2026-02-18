@@ -596,6 +596,7 @@ func handle[T Response](resp *http.Response, errorSummaries ErrorSummaries) (*T,
 	switch contentType {
 	case "application/json":
 		if respBody, readErr := io.ReadAll(resp.Body); readErr == nil {
+			//fmt.Println("Synology API Response JSON:", string(respBody))
 			if decodeErr := json.NewDecoder(bytes.NewReader(respBody)).
 				Decode(&synoResponse); decodeErr != nil {
 				if decodeErr := json.NewDecoder(bytes.NewReader(respBody)).
