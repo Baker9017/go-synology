@@ -3,6 +3,7 @@ package filestation
 import (
 	"context"
 	"fmt"
+	pathpkg "path"
 	"path/filepath"
 	"slices"
 	"time"
@@ -48,7 +49,7 @@ func (f *Client) List(ctx context.Context, folderPath string) (*models.FileList,
 }
 
 func (f *Client) Get(ctx context.Context, path string) (*models.File, error) {
-	folder := filepath.Dir(path)
+	folder := pathpkg.Dir(filepath.ToSlash(path))
 	resp, err := f.List(ctx, folder)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get file, got error: %s", err)
