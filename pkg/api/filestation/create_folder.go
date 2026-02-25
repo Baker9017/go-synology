@@ -3,8 +3,8 @@ package filestation
 import "net/url"
 
 type CreateFolderRequest struct {
-	Paths       []string `form:"folder_path"  url:"folder_path"`
-	Names       []string `form:"name"         url:"name"`
+	Paths       []string `form:"folder_path"  url:"folder_path,json"`
+	Names       []string `form:"name"         url:"name,json"`
 	ForceParent bool     `form:"force_parent" url:"force_parent"`
 }
 
