@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"path"
+	"path/filepath"
 	"slices"
 	"time"
 
@@ -199,7 +199,7 @@ func (c Client) PackageInstallCompound(
 			return err
 		}
 
-		fileName := path.Base(req.File)
+		fileName := filepath.Base(req.File)
 
 		ctx, cancel := context.WithTimeout(ctx, 120*time.Minute)
 		defer cancel()

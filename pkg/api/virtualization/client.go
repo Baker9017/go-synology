@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -32,11 +32,11 @@ func (v *Client) ImageUploadAndCreate(
 	imageRepos []string,
 	imageType string,
 ) (*Task, error) {
-	name := strings.TrimSuffix(path.Base(file.Name), path.Ext(file.Name))
+	name := strings.TrimSuffix(filepath.Base(file.Name), filepath.Ext(file.Name))
 
 	resp, err := api.PostFileWithQuery[TaskRef](v.client, ctx, &UploadAndCreateRequest{
 		Name:       name,
-		DsFilePath: path.Base(file.Name),
+		DsFilePath: filepath.Base(file.Name),
 		ImageRepos: imageRepos,
 		Type:       imageType,
 		GetPatchBy: "upload",

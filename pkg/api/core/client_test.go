@@ -3,7 +3,7 @@ package core
 import (
 	"context"
 	"os"
-	"path"
+	"path/filepath"
 	"reflect"
 	"testing"
 	"time"
@@ -542,7 +542,7 @@ func TestClient_PackageInstallUpload(t *testing.T) {
 				return
 			}
 
-			fileName := path.Base(tt.args.filePath)
+			fileName := filepath.Base(tt.args.filePath)
 
 			ctx, cancel := context.WithTimeout(tt.args.ctx, 120*time.Minute)
 			defer cancel()
