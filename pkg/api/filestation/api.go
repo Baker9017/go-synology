@@ -26,6 +26,8 @@ type Api interface {
 	) (*UploadResponse, error)
 	Rename(ctx context.Context, path string, name string, newName string) (*models.FileList, error)
 	Download(ctx context.Context, path string, mode string) (*form.File, error)
+	// DownloadFolder 打包下载文件夹。dlName 可选，不传则取 paths[0] 最后一层文件夹名加 .zip
+	DownloadFolder(ctx context.Context, paths []string, dlName ...string) (*form.File, error)
 	Delete(
 		ctx context.Context,
 		paths []string,

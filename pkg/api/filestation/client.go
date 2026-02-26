@@ -146,17 +146,42 @@ func (f *Client) Download(ctx context.Context, path string, mode string) (*form.
 	}, methods.Download)
 }
 
+// DownloadFolder 打包下载文件夹，将指定路径的文件夹压缩为 zip 后返回
+// dlName 可选，不传则取 paths[0] 最后一层文件夹名加 .zip
+func (f *Client) DownloadFolder(ctx context.Context, paths []string, dlName ...string) (*form.File, error) {
+	name := ""
+	if len(dlName) > 0 && dlName[0] != "" {
+		name = dlName[0]
+	} else if len(paths) > 0 {
+		name = pathpkg.Base(paths[0]) + ".zip"
+	}
+	file, err := api.Get[form.File](f.client, ctx, &DownloadFolderRequest{
+		Path:    paths,
+		DlName:  name,
+		Mode:    "download",
+		Stdhtml: "false",
+	}, methods.Download)
+	if err != nil {
+		return nil, err
+	}
+	if file != nil {
+		file.Name = name
+	}
+	return file, nil
+}
+
 // Rename implements FileStationApi.
+// path 为父目录路径，name 为当前文件名，newName 为新的文件名。
 func (f *Client) Rename(
 	ctx context.Context,
 	path string,
 	name string,
 	newName string,
 ) (*models.FileList, error) {
+	fullPath := pathpkg.Join(path, name)
 	return api.Get[models.FileList](f.client, ctx, &RenameRequest{
-		Path:    path,
-		Name:    name,
-		NewName: newName,
+		Path: []string{fullPath},
+		Name: []string{newName},
 	}, methods.Rename)
 }
 
