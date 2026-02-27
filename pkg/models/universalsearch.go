@@ -5,6 +5,7 @@ type SearchRequest struct {
 	SearchWeightList string `url:"search_weight_list"`
 	QueryID          string `url:"query_id"`
 	Agent            string `url:"agent"`
+	Fields           string `url:"fields"`
 	From             int    `url:"from"`
 	Size             int    `url:"size"`
 }
@@ -17,15 +18,18 @@ type SearchData struct {
 }
 
 type SearchHit struct {
-	SYNOMDExtension   string              `json:"SYNOMDExtension,omitempty"`
-	SYNOMDFSName      string              `json:"SYNOMDFSName,omitempty"`
-	SYNOMDFSSize      string              `json:"SYNOMDFSSize,omitempty"`
-	SYNOMDIsDir       string              `json:"SYNOMDIsDir,omitempty"`
-	SYNOMDOwnerUserID interface{}         `json:"SYNOMDOwnerUserID,omitempty"`
-	SYNOMDPath        string              `json:"SYNOMDPath,omitempty"`
-	SYNOMDSharePath   string              `json:"SYNOMDSharePath,omitempty"`
-	Additional        SearchHitAdditional `json:"additional,omitempty"`
-	Readable          bool                `json:"readable,omitempty"`
+	SYNOMDExtension               string              `json:"SYNOMDExtension,omitempty"`
+	SYNOMDContentModificationDate string              `json:"SYNOMDContentModificationDate,omitempty"`
+	SYNOMDFSCreationDate          string              `json:"SYNOMDFSCreationDate,omitempty"`
+	SYNOMDLastUsedDate            string              `json:"SYNOMDLastUsedDate,omitempty"`
+	SYNOMDFSName                  string              `json:"SYNOMDFSName,omitempty"`
+	SYNOMDFSSize                  string              `json:"SYNOMDFSSize,omitempty"`
+	SYNOMDIsDir                   string              `json:"SYNOMDIsDir,omitempty"`
+	SYNOMDOwnerUserID             interface{}         `json:"SYNOMDOwnerUserID,omitempty"`
+	SYNOMDPath                    string              `json:"SYNOMDPath,omitempty"`
+	SYNOMDSharePath               string              `json:"SYNOMDSharePath,omitempty"`
+	Additional                    SearchHitAdditional `json:"additional,omitempty"`
+	Readable                      bool                `json:"readable,omitempty"`
 }
 
 type SearchHitAdditional struct {

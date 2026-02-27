@@ -21,12 +21,15 @@ func (c *Client) Search(ctx context.Context, keyword string, from int, size int)
 	searchWeightList := `[{"field":"SYNOMDSearchFileName","weight":1}]`
 	queryID := fmt.Sprintf(`"%d"`, from)
 	agent := `"sus"`
+	// fields 参数指定返回的元数据，需显式请求时间相关字段才会在结果中返回
+	fields := `["SYNOMDExtension","SYNOMDFSName","SYNOMDFSSize","SYNOMDIsDir","SYNOMDOwnerUserID","SYNOMDPath","SYNOMDSharePath","SYNOMDContentModificationDate","SYNOMDFSCreationDate","SYNOMDLastUsedDate"]`
 
 	return api.Post[models.SearchData](c.client, ctx, &models.SearchRequest{
 		Keyword:          keyword,
 		SearchWeightList: searchWeightList,
 		QueryID:          queryID,
 		Agent:            agent,
+		Fields:           fields,
 		From:             from,
 		Size:             size,
 	}, methods.Search)
