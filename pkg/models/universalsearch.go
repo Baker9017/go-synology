@@ -1,7 +1,8 @@
 package models
 
 type SearchRequest struct {
-	Keyword          string `url:"keyword"`
+	// Keyword must be JSON-encoded (e.g. "8.0.8" -> "\"8.0.8\"") per Synology API requirement
+	Keyword          string `url:"keyword,json"`
 	SearchWeightList string `url:"search_weight_list"`
 	QueryID          string `url:"query_id"`
 	Agent            string `url:"agent"`

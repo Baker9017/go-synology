@@ -48,6 +48,7 @@ var globalErrors ErrorSummary = ErrorSummary{
 	117:  "error - error_error_system",
 	118:  "error - error_error_system",
 	119:  "SID not found",
+	120:  "Invalid parameter type (e.g. keyword expects JSON string)",
 	1198: "common - version_not_support",
 	1201: "error - error_subject",
 	1202: "firewall - firewall_tc_ceil_exceed_system_upper_bound",

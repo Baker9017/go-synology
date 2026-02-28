@@ -97,6 +97,15 @@ func Marshal(b *bytes.Buffer, input ...any) (*multipart.Writer, int64, error) {
 				formKindName = kindTags[0]
 			}
 
+			fieldVal := v.Field(i)
+			if fieldType.Kind() == reflect.Ptr {
+				if fieldVal.IsNil() {
+					continue
+				}
+				fieldVal = fieldVal.Elem()
+				fieldType = fieldVal.Type()
+			}
+
 			formKind := fieldType.Kind()
 
 			if field.Name == "File" {
@@ -106,25 +115,25 @@ func Marshal(b *bytes.Buffer, input ...any) (*multipart.Writer, int64, error) {
 			// get field type
 			switch formKind {
 			case reflect.String:
-				if err := w.WriteField(formFieldName, v.Field(i).String()); err != nil {
+				if err := w.WriteField(formFieldName, fieldVal.String()); err != nil {
 					return nil, fileSize, err
 				}
-			case reflect.Int:
+			case reflect.Int, reflect.Int64:
 				if err := w.WriteField(
 					formFieldName,
-					strconv.Itoa(int(v.Field(i).Int())),
+					strconv.FormatInt(fieldVal.Int(), 10),
 				); err != nil {
 					return nil, fileSize, err
 				}
 			case reflect.Bool:
 				if err := w.WriteField(
 					formFieldName,
-					strconv.FormatBool(v.Field(i).Bool()),
+					strconv.FormatBool(fieldVal.Bool()),
 				); err != nil {
 					return nil, fileSize, err
 				}
 			case reflect.Slice:
-				slice := v.Field(i)
+				slice := fieldVal
 				switch fieldType.Elem().Kind() {
 				case reflect.String:
 					res := []string{}
@@ -160,7 +169,7 @@ func Marshal(b *bytes.Buffer, input ...any) (*multipart.Writer, int64, error) {
 				var fileName string
 				var fileReader io.Reader
 
-				embStruct := v.Field(i)
+				embStruct := fieldVal
 				embStructT := v.Field(i).Type()
 				for j := 0; j < embStruct.NumField(); j++ {
 					formTags := strings.Split(embStructT.Field(j).Tag.Get("form"), ",")

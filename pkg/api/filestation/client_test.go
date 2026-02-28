@@ -537,6 +537,7 @@ func Test_Client_Upload(t *testing.T) {
 		file          form.File
 		createParents bool
 		overwrite     bool
+		mtime         *time.Time
 	}
 	tests := []struct {
 		name    string
@@ -551,14 +552,12 @@ func Test_Client_Upload(t *testing.T) {
 				client: newClient(t),
 			},
 			args: args{
-				ctx:  context.Background(),
-				path: "/data/foo",
-				file: form.File{
-					Name:    "test.txt",
-					Content: "Hello, World!",
-				},
+				ctx:           context.Background(),
+				path:          "/data/foo",
+				file:          form.File{Name: "test.txt", Content: "Hello, World!"},
 				createParents: true,
 				overwrite:     true,
+				mtime:         nil,
 			},
 			want:    nil,
 			wantErr: false,
@@ -572,6 +571,7 @@ func Test_Client_Upload(t *testing.T) {
 				tt.args.file,
 				tt.args.createParents,
 				tt.args.overwrite,
+				tt.args.mtime,
 			)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Client.Upload() error = %v, wantErr %v", err, tt.wantErr)

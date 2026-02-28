@@ -2,6 +2,7 @@ package filestation
 
 import (
 	"context"
+	"time"
 
 	"github.com/synology-community/go-synology/pkg/models"
 	"github.com/synology-community/go-synology/pkg/util/form"
@@ -17,12 +18,14 @@ type Api interface {
 	ListShares(ctx context.Context) (*models.ShareList, error)
 	List(ctx context.Context, folderPath string) (*models.FileList, error)
 	Get(ctx context.Context, path string) (*models.File, error)
+	CheckWritePermission(ctx context.Context, path, filename string, size int64, overwrite bool) (bool, error)
 	Upload(
 		ctx context.Context,
 		path string,
 		file form.File,
 		createParents bool,
 		overwrite bool,
+		mtime *time.Time,
 	) (*UploadResponse, error)
 	Rename(ctx context.Context, path string, name string, newName string) (*models.FileList, error)
 	Download(ctx context.Context, path string, mode string) (*form.File, error)

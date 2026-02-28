@@ -591,24 +591,29 @@ func handle[T Response](resp *http.Response, errorSummaries ErrorSummaries) (*T,
 	var synoResponsePartialAuth ApiResponsePartialAuth[T]
 
 	contentType := resp.Header.Get("Content-Type")
-	contentType = strings.Split(contentType, ";")[0]
+	contentType = strings.TrimSpace(strings.Split(contentType, ";")[0])
 
+	// Synology 部分接口（如上传进度）返回 text/plain，但 body 仍是标准 JSON 格式
 	switch contentType {
-	case "application/json":
+	case "application/json", "text/plain":
 		if respBody, readErr := io.ReadAll(resp.Body); readErr == nil {
 			//fmt.Println("Synology API Response JSON:", string(respBody))
 			if decodeErr := json.NewDecoder(bytes.NewReader(respBody)).
 				Decode(&synoResponse); decodeErr != nil {
 				if decodeErr := json.NewDecoder(bytes.NewReader(respBody)).
 					Decode(&synoResponsePartialAuth); decodeErr == nil {
-					return nil, ErrOtpRequired
-				} else {
-					return nil, errors.New(
-						"unable to decode response: " + decodeErr.Error() + "\n\n" + string(
-							respBody,
-						),
-					)
+					// Only return OTP error when it's actually a 403 OTP-required response
+					if synoResponsePartialAuth.Error.Code == 403 {
+						return nil, ErrOtpRequired
+					}
+					// For other error codes, return the actual API error with raw response
+					return nil, fmt.Errorf("API error %d: %s", synoResponsePartialAuth.Error.Code, string(respBody))
 				}
+				return nil, errors.New(
+					"unable to decode response: " + decodeErr.Error() + "\n\n" + string(
+						respBody,
+					),
+				)
 			}
 		} else {
 			return nil, readErr

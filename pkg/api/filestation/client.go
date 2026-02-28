@@ -204,18 +204,42 @@ func (f *Client) ListShares(ctx context.Context) (*models.ShareList, error) {
 	return api.Get[models.ShareList](f.client, ctx, &ListShareRequest{}, methods.ListShares)
 }
 
+// CheckWritePermission 检查用户对指定目录是否有写权限（上传权限）
+// path 为目录路径，如 /Temp/12；filename 为要上传的文件名；size 为文件大小（字节）
+// 返回 true 表示有写权限，false 表示无写权限
+func (f *Client) CheckWritePermission(ctx context.Context, path, filename string, size int64, overwrite bool) (bool, error) {
+	resp, err := api.Get[CheckPermissionResponse](f.client, ctx, &CheckPermissionRequest{
+		Path:      path,
+		Filename:  filename,
+		Size:      size,
+		Overwrite: overwrite,
+	}, methods.CheckPermission)
+	if err != nil {
+		return false, err
+	}
+	// blSkip: false 表示有权限，true 表示无权限需跳过
+	return !resp.BlSkip, nil
+}
+
 // Upload implements FileStationApi.
+// mtime 可选，指定上传后文件的修改时间（毫秒时间戳），传 nil 则不设置
 func (f *Client) Upload(
 	ctx context.Context,
 	path string,
 	file form.File,
 	createParents bool,
 	overwrite bool,
+	mtime *time.Time,
 ) (*UploadResponse, error) {
-	return api.PostFile[UploadResponse](f.client, ctx, &UploadRequest{
+	req := &UploadRequest{
 		Path:          path,
 		File:          file,
 		CreateParents: createParents,
 		Overwrite:     overwrite,
-	}, methods.Upload)
+	}
+	if mtime != nil {
+		ms := mtime.UnixMilli()
+		req.Mtime = &ms
+	}
+	return api.PostFile[UploadResponse](f.client, ctx, req, methods.Upload)
 }
