@@ -88,9 +88,10 @@ var (
 		Version: 2,
 	}
 	CheckPermission = api.Method{
-		API:     "SYNO.FileStation.CheckPermission",
-		Version: 3,
-		Method:  "write",
+		API:            "SYNO.FileStation.CheckPermission",
+		Version:        3,
+		Method:         "write",
+		ErrorSummaries: CommonErrors,
 	}
 	Compress = api.Method{
 		API:     "SYNO.FileStation.Compress",
